@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert, Button } from 'react-native';
 import { auth, db } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
   const [userData, setUserData] = useState({email: '', role: ''});
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,6 +34,17 @@ export default function ProfileScreen() {
     fetchUserData();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      Alert.alert('Sikeres kijelentkezés');
+      router.replace('/');
+    } catch (error) {
+      console.error('Kijelentkezési hiba:', error);
+      Alert.alert('Hiba történt kijelentkezés közben');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -51,6 +65,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <Text style={styles.text}>Welcome, {userData.email}!</Text>
       <Text style={styles.text}>Role: {userData.role}</Text>
+      <Button title="Kijelentkezés" onPress={handleLogout} color="red" />
     </View>
   );
 }
