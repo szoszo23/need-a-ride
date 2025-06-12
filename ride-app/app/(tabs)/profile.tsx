@@ -38,7 +38,7 @@ export default function ProfileScreen() {
     try {
       await signOut(auth);
       Alert.alert('Sikeres kijelentkezés');
-      router.replace('/');
+      router.push('/(unauth)/login');
     } catch (error) {
       console.error('Kijelentkezési hiba:', error);
       Alert.alert('Hiba történt kijelentkezés közben');
