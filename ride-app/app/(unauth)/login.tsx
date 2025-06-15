@@ -13,7 +13,7 @@ export default function LoginScreen() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       alert('Sikeres belépés!');
-      router.push('/(tabs)/profile');
+      router.push('/(rider)/profile');
     } catch (error: any) {
       alert(error.message);
     }
