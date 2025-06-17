@@ -3,21 +3,36 @@ import { View, TextInput, Button, Text } from 'react-native';
 import { auth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'expo-router';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      alert('Sikeres belépés!');
-      router.push('/(rider)/profile');
-    } catch (error: any) {
-      alert(error.message);
+const handleLogin = async () => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+
+    // Role lekérés
+    const docRef = doc(db, 'users', uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const role = docSnap.data().role;
+      if (role === 'driver') router.replace('/(driver)');
+      else if (role === 'passenger') router.replace('/(rider)');
+      else router.replace('/');
+    } else {
+      alert('Nincs jogosultság információ!');
+      router.replace('/');
     }
-  };
+  } catch (error: any) {
+    alert(error.message);
+  }
+};
 
   return (
     <View style={{ padding: 20 }}>

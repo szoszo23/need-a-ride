@@ -11,6 +11,7 @@ export default function Index() {
 
 return (
     <View style={styles.container}>
+      <Text>Utas oldal</Text>
       <Text style={styles.title}>Üdvözöllek az appban!</Text>
 
       {user ? (
